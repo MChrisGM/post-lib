@@ -15,6 +15,8 @@ except Exception as E:
     print("Exception: ")
     print(E)
 
+callback_responses=[]
+
 class _Poster(Resource):
     def post(self):
         m = str(request.get_data().decode('utf-8')).replace("'",'"')
@@ -25,8 +27,12 @@ class _Poster(Resource):
             print("Exception: ")
             print(E)
             data = json.dumps("{}")
-        return {},200
-
+            return {"message":"Could not parse JSON"},400
+        for func in callback_responses:
+            response = func(data)
+            if response:
+                return response,200
+        return {"message":"No response"},404
 
 class Server():
     def __init__(self,host=None,port=None,debug = False, default_route='/'):
@@ -38,7 +44,6 @@ class Server():
         self.app = Flask(__name__)
         self.api = Api(self.app)
         self.api.add_resource(_Poster, self.default_route)
-        self.responses = []
 
     def run(self):
         def start():
@@ -46,6 +51,5 @@ class Server():
         start()
         #thread.start_new_thread(start, ())
 
-
     def add_response(self,_callback=None):
-        self.responses.append(_callback)
+        callback_responses.append(_callback)
