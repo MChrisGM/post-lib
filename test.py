@@ -4,7 +4,7 @@ import json
 def relay(data):
     if 'type' in data.keys():
         if data['type'] == 'request':
-            return json.dumps("{'type':'relay','relay':[]}")
+            return json.dumps({"type":"relay","relay":[]})
         else:
             return False
     else:
