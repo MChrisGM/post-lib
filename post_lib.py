@@ -26,12 +26,12 @@ class _Poster(Resource):
             print("Could not parse JSON")
             print("Exception: ")
             print(E)
-            return json.dumps({"message":"Could not parse JSON"}),400
+            return json.dumps({"type":"API","API":"Could not parse JSON"}),400
         for func in callback_responses:
             response = func(data)
             if response:
                 return response,200
-        return json.dumps({"message":"No response"}),404
+        return json.dumps({"type":"API","API":"No response"}),404
 
 class Server():
     def __init__(self,host=None,port=None,debug = False, default_route='/'):
